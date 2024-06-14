@@ -2,11 +2,12 @@
 
 include 'koneksi.php';
 
-$sql = "SELECT * FROM tb_pemesanan";
+$idPesanan = $_GET['id'];
+
+$sql = "SELECT * FROM tb_pemesanan WHERE idPesanan='$idPesanan'";
 $query = mysqli_query($connect, $sql);
-
+$data = mysqli_fetch_array($query);
 ?>
-
 
 <!doctype html>
 <html lang="en">
@@ -96,57 +97,114 @@ $query = mysqli_query($connect, $sql);
 
 
     <div class="container mt-4 mb-5">
-        <h4>Data Pemesanan</h4>
-        <table class="table table-hover table-striped">
-            <thead>
-                <tr>
-                    <th>Nama Pemesan</th>
-                    <th>No Telp</th>
-                    <th>Durasi</th>
-                    <th>Jenis Kamar</th>
-                    <th>Smoking</th>
-                    <th>BreakFast</th>
-                    <th>Harga Paket</th>
-                    <th>Total Biaya</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($data = mysqli_fetch_array($query)) : ?>
-                    <tr>
-                        <td><?= $data['nama'] ?></td>
-                        <td><?= $data['noTelp'] ?></td>
-                        <td><?= $data['durasi'] ?></td>
-                        <td><?= $data['jenisKamar'] ?></td>
-                        <td><?= $data['smoking'] ?></td>
-                        <td><?= $data['breakfast'] ?></td>
-                        <td><?= $data['hargaPaket'] ?></td>
-                        <td><?= $data['totalBiaya'] ?></td>
-                        <td>
-                            <a href="edit.php?id=<?= $data['idPesanan'] ?>">
-                                <button class="btn btn-warning">Edit</button>
-                            </a>
-                            <a href="hapus.php?id=<?= $data['idPesanan'] ?>">
-                                <button class="btn btn-danger">Hapus</button>
-                            </a>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+        <h4>Form Pemesanan</h4>
+        <form action="edit_proses.php?id=<?= $idPesanan ?>" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <div>
+                        <label for="nama" class="form-label">Nama Pemesan</label>
+                        <input value="<?= $data['nama'] ?>" name="name" type="text" id="nama" class="form-control">
+                    </div>
+                    <div>
+                        <label for="tgl" class="form-label">Tanggal Pemesanan</label>
+                        <input value="<?= $data['tgl'] ?>" name="tgl" type="date" id="tgl" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div>
+                        <label for="noTelp" class="form-label">No Telephone</label>
+                        <input value="<?= $data['noTelp'] ?>" name="noTelp" type="text" id="noTelp" class="form-control">
+                    </div>
+                    <div>
+                        <label for="durasi" class="form-label">Durasi (Hari)</label>
+                        <input value="<?= $data['durasi'] ?>" name="durasi" type="number" id="durasi" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mt-3">
+                        <label for="" class="form-label">Pilih Jenis Kamar</label>
+                        <div class="form-check">
+                            <input <?= $data['jenisKamar'] ==='Deluxe' ? 'checked' : '' ?> name="jenisKamar" class="form-check-input" type="radio" value="Deluxe" id="deluxe">
+                            <label class="form-check-label" for="deluxe">
+                                Deluxe (Rp.1.000.000)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input  <?= $data['jenisKamar'] ==='Premium' ? 'checked' : '' ?> name="jenisKamar" class="form-check-input" type="radio" value="Premium" id="premium">
+                            <label class="form-check-label" for="premium">
+                                Premium (Rp.800.000)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mt-3">
+                        <label for="" class="form-label">Fasilitas</label>
+                        <div class="form-check">
+                            <input <?= $data['smoking'] ? 'checked' : '' ?> name="smoking" class="form-check-input" type="checkbox" value="" id="smoking">
+                            <label class="form-check-label" for="smoking">
+                                Include Smoking Room (Rp.200.000)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input <?= $data['breakfast'] ? 'checked' : '' ?> name="breakfast" class="form-check-input" type="checkbox" value="" id="breakfast">
+                            <label class="form-check-label" for="breakfast">
+                                Include Breakfast (Rp.100.000)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div>
+                        <label for="harga" class="form-label">Harga Paket</label>
+                        <input value="<?= $data['hargaPaket'] ?>" readonly name="harga" type="number" id="harga" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div>
+                        <label for="totalBiaya" class="form-label">Total Biaya</label>
+                        <input value="<?= $data['totalBiaya'] ?>" readonly name="totalBiaya" type="number" id="totalBiaya" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6"></div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-3">
+                    <button type="submit" class="btn btn-success">Simpan</button>
+                </div>
+            </div>
+        </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
-        function confirmation() {
-            const choice = confirmation('Apakah anda yakin ? ')
-
-            if (choice){
-                return true
-            }else {
-                alert('Hapus Dibatalkan')
+        function hitung() {
+            const durasi = $('#durasi').val()
+            let hargaKamar = 0
+            const deluxe = $('#deluxe').is(':checked')
+            const premium = $('#premium').is(':checked')
+            const smoking = $('#smoking').is(':checked') ? 200_000 : 0;
+            const breakfast = $('#breakfast').is(':checked') ? 100_000 : 0;
+            if (deluxe) {
+                hargaKamar = 1_000_000
             }
+            if (premium) {
+                hargaKamar = 800_000
+            }
+            const hargaPaket = (hargaKamar + smoking + breakfast)
+            const totalBiaya = hargaPaket * Number(durasi)
+            $("#harga").val(hargaPaket);
+            $("#totalBiaya").val(totalBiaya);
+
         }
+
+        $('#durasi, #deluxe, #premium, #smoking, #breakfast').on('input', function() {
+            hitung()
+        })
     </script>
 </body>
 
